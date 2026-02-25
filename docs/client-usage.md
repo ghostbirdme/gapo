@@ -51,15 +51,15 @@ gapo [flags] <subdomain> <local-port>
 
 **Flags:**
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--server` | Server tunnel address | `localhost:19443` |
-| `--token` | Auth token (required) | — |
-| `--tcp` | TCP tunnel mode (for SSH, databases, etc.) | `false` |
-| `--tls` | Connect using TLS | `false` |
-| `--insecure` | Skip TLS certificate verification | `false` |
-| `--no-tui` | Disable TUI, use plain log output | `false` |
-| `--version` | Show version and exit | — |
+| Flag | Short | Description | Default |
+|------|-------|-------------|---------|
+| `--server` | `-s` | Server tunnel address | `localhost:19443` |
+| `--token` | `-t` | Auth token (required) | — |
+| `--tcp` | | TCP tunnel mode (for SSH, databases, etc.) | `false` |
+| `--tls` | | Connect using TLS | `false` |
+| `--insecure` | `-k` | Skip TLS certificate verification | `false` |
+| `--no-tui` | `-n` | Disable TUI, use plain log output | `false` |
+| `--version` | `-v` | Show version and exit | — |
 
 ## Configuration
 
@@ -135,7 +135,7 @@ gapo myapp 3000
 
 **Expose with TLS (server uses self-signed cert):**
 ```bash
-gapo --tls --insecure myapp 3000
+gapo --tls -k myapp 3000
 ```
 
 **Expose with TLS (server uses valid cert):**
@@ -145,7 +145,7 @@ gapo --tls myapp 3000
 
 **Run in background (log mode):**
 ```bash
-gapo --no-tui myapp 3000 &
+gapo -n myapp 3000 &
 ```
 
 **Multiple tunnels (different subdomains, different terminals):**

@@ -54,18 +54,18 @@ Settings can be provided via CLI flags, or a config file.
 
 ### CLI Flags
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--http` | HTTP listen address | `:8443` |
-| `--tunnel` | Tunnel listen address | `:19443` |
-| `--domain` | Base domain for subdomains | `localhost` |
-| `--token` | Auth token (required) | — |
-| `--tcp-ports` | TCP tunnel port range (e.g. `30000-39999`) | — |
-| `--tls` | Enable TLS on tunnel listener (self-signed) | `false` |
-| `--autocert` | Enable Let's Encrypt HTTPS | `false` |
-| `--cert-dir` | Directory for autocert certificate cache | `/var/lib/gapo/certs` |
-| `--email` | Email for Let's Encrypt registration | — |
-| `--version` | Show version and exit | — |
+| Flag | Short | Description | Default |
+|------|-------|-------------|---------|
+| `--http` | `-H` | HTTP listen address | `:8443` |
+| `--tunnel` | `-T` | Tunnel listen address | `:19443` |
+| `--domain` | `-d` | Base domain for subdomains | `localhost` |
+| `--token` | `-t` | Auth token (required) | — |
+| `--tcp-ports` | `-p` | TCP tunnel port range (e.g. `30000-39999`) | — |
+| `--tls` | | Enable TLS on tunnel listener (self-signed) | `false` |
+| `--autocert` | | Enable Let's Encrypt HTTPS | `false` |
+| `--cert-dir` | `-c` | Directory for autocert certificate cache | `/var/lib/gapo/certs` |
+| `--email` | `-e` | Email for Let's Encrypt registration | — |
+| `--version` | `-v` | Show version and exit | — |
 
 ### Config File
 
@@ -107,6 +107,25 @@ This starts:
 
 Certificates are cached in `--cert-dir` and renewed automatically. Certificates are only issued for subdomains with active tunnels.
 
+### Certificate Lifecycle
+
+Let's Encrypt certificates are valid for 90 days and are renewed automatically approximately 30 days before expiry. No manual intervention is needed for active tunnels.
+
+**When a tunnel is removed or a subdomain is no longer in use:**
+
+- The server's host policy only issues certificates for subdomains with active tunnels, so no new certificate will be provisioned for inactive subdomains.
+- The existing cached certificate in `--cert-dir` will expire naturally within 90 days.
+- In most cases, revocation is unnecessary — the private key stays on your server and the certificate becomes useless once it expires.
+
+**When to manually intervene:**
+
+- If your server or `--cert-dir` was compromised, revoke affected certificates through Let's Encrypt directly and rotate your server credentials.
+- To remove a cached certificate immediately:
+
+  ```bash
+  rm /var/lib/gapo/certs/myapp.tunnel.example.com
+  ```
+
 ### Prepare the certificate directory
 
 ```bash
@@ -124,6 +143,42 @@ Ensure these ports are open:
 | 443 | HTTPS proxy (serves tunneled traffic) |
 | 19443 | Tunnel connections from clients |
 | 30000-39999 | TCP tunnel ports (if `--tcp-ports` is configured) |
+
+### Running Other Services on the Same VPS
+
+Gapo-server binds ports 80 and 443 exclusively, so other web services cannot share those ports. However, other services can run on the same VPS using different ports:
+
+| Service         | Port  | Access Method              |
+|-----------------|-------|----------------------------|
+| gapo-server     | 80/443| Public (tunnel traffic)    |
+| PostgreSQL      | 5432  | Internal only              |
+| Redis           | 6379  | Internal only              |
+| Your API app    | 3000  | Via gapo tunnel or direct  |
+| Admin panel     | 8080  | Via gapo tunnel or direct  |
+
+**Exposing services through gapo:**
+
+You can run a gapo client on the same VPS to tunnel a local service, giving it a public subdomain with automatic HTTPS:
+
+```bash
+gapo --server localhost:19443 --token your-secret-token --no-tui api 3000
+```
+
+This makes `api.tunnel.example.com` serve your app on port 3000 with HTTPS — no extra certificate setup needed.
+
+You can run multiple gapo clients simultaneously, each exposing a different service on its own subdomain:
+
+```bash
+gapo --server localhost:19443 --token your-secret-token --no-tui api 3000
+gapo --server localhost:19443 --token your-secret-token --no-tui admin 8080
+gapo --server localhost:19443 --token your-secret-token --no-tui docs 4000
+```
+
+Each client gets its own connection and route entry. No conflicts as long as the subdomain names are different.
+
+**Keeping services private:**
+
+For internal services (databases, caches), keep their ports closed in the firewall and access them only via SSH tunnel or VPN.
 
 ## Development Setup (Self-Signed TLS)
 
