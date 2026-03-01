@@ -1,6 +1,6 @@
 # Gapo Tunnel - Binary License Agreement
 
-Copyright (c) 2026-present Ghostbird Media (003014298-T) -- https://ghostbirdmedia.com
+Copyright (c) 2026-present Ghostbird Media <https://ghostbirdmedia.com>
 
 ## 1. Grant of License
 
