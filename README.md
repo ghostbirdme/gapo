@@ -141,6 +141,85 @@ gapo-server --update
 
 ---
 
+## Screenshots
+
+**HTTP tunnel — TUI dashboard:**
+
+```
+╭──────────────────────────────────────────────────────────────────────────╮
+│ Gapo                                                    (Ctrl+C to quit) │
+│                                                                          │
+│  Session Status   ● online                                               │
+│  Forwarding       https://myapp.tunnel.example.com                       │
+│                                                                          │
+│──────────────────────────────────────────────────────────────────────────│
+│                                                                          │
+│  Connections     ttl      rt1      rt5      p50      p90                 │
+│                  47       0.82     0.64     12ms     89ms                │
+│                                                                          │
+│──────────────────────────────────────────────────────────────────────────│
+│                                                                          │
+│  HTTP Requests                                                           │
+│  14:32:08  GET     /api/users                     200  12ms   203.0.113.5│
+│  14:32:07  POST    /api/login                     200  89ms   203.0.113.5│
+│  14:32:05  GET     /assets/style.css              200  <1ms   198.51.100.│
+│  14:32:04  GET     /                              200  23ms   198.51.100.│
+│  14:32:01  GET     /favicon.ico                   404  4ms    203.0.113.5│
+╰──────────────────────────────────────────────────────────────────────────╯
+```
+
+**TCP tunnel — TUI dashboard:**
+
+```
+╭──────────────────────────────────────────────────────────────────────────╮
+│ Gapo                                                    (Ctrl+C to quit) │
+│                                                                          │
+│  Session Status   ● online                                               │
+│  Mode             TCP                                                    │
+│  Forwarding       tcp port 30000                                         │
+│                                                                          │
+│──────────────────────────────────────────────────────────────────────────│
+│                                                                          │
+│  TCP Connections                                                         │
+│  Active           2  (total 5)                                           │
+│                                                                          │
+│  14:35:12  203.0.113.5           connected                               │
+│  14:35:10  198.51.100.22         connected                               │
+│  14:34:58  203.0.113.5           disconnected                            │
+│  14:34:45  198.51.100.22         disconnected                            │
+│  14:34:30  203.0.113.5           connected                               │
+╰──────────────────────────────────────────────────────────────────────────╯
+```
+
+**Server log output:**
+
+```
+$ gapo-server \
+    --domain tunnel.example.com \
+    --token your-secret-token \
+    --autocert \
+    --cert-dir /var/lib/gapo/certs \
+    --email admin@example.com \
+    --http 443 \
+    --tunnel 19443 \
+    --tcp-ports 30000-39999
+
+2026/03/02 14:30:00 gapo-server v1.0.0 (built 2026-03-02T00:00:00Z)
+2026/03/02 14:30:00 http server on :443 (autocert)
+2026/03/02 14:30:00 tunnel listener on :19443
+2026/03/02 14:30:00 tcp tunnel ports: 30000-39999
+2026/03/02 14:30:05 tunnel: new connection from 203.0.113.5:48201
+2026/03/02 14:30:05 tunnel: registered myapp.tunnel.example.com (http, v1.0.0)
+2026/03/02 14:30:08 http: myapp.tunnel.example.com GET / -> 200 (23ms)
+2026/03/02 14:30:09 http: myapp.tunnel.example.com GET /api/users -> 200 (12ms)
+2026/03/02 14:31:00 tunnel: new connection from 198.51.100.22:52310
+2026/03/02 14:31:00 tunnel: registered ssh.tunnel.example.com (tcp, v1.0.0)
+2026/03/02 14:31:00 tunnel: TCP port 30000 allocated for ssh.tunnel.example.com
+2026/03/02 14:31:15 tunnel: tcp connection 203.0.113.5 -> ssh.tunnel.example.com:30000
+```
+
+---
+
 ## More help
 
 - [Server Setup](docs/SERVER-SETUP.md) — server guide, systemd, firewall, requirements
