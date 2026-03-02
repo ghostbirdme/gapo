@@ -1,3 +1,12 @@
+## v1.0.1 (2026-03-03)
+
+- **New:** TCP connections in the TUI now support inspection — press Enter on any connection to see remote address, status, timing, and data transfer details.
+- **Enh:** TCP connections panel now shows duration and bytes transferred per connection.
+- **Enh:** TCP connections panel now supports keyboard navigation (arrow keys, Home/End) like the HTTP request list.
+- **Enh:** TCP connection inspect view updates live while the connection is active, showing real-time byte counters.
+- **Enh:** Request duration column now uses fixed width for consistent alignment.
+- **Fix:** TUI header was hidden when the request list filled the screen.
+
 ## v1.0.0 (2026-03-02)
 
 - **New:** TUI now shows remote IP addresses for HTTP requests and TCP connections.

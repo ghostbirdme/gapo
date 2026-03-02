@@ -146,11 +146,27 @@ The server allocates a public port (e.g., 30000) and displays it. Remote users c
 
 By default, gapo starts with an interactive dashboard showing:
 
+**HTTP mode:**
 - **Session** — connection status, server address, tunnel URL
 - **Connections** — active streams between server and your local service
 - **Requests** — live log of HTTP requests (method, path, status, timing)
 
-Press `Ctrl+C` to disconnect.
+**TCP mode:**
+- **Session** — connection status, mode, remote port
+- **TCP Connections** — active/total connections with duration and bytes transferred
+
+**Keyboard shortcuts:**
+| Key | Action |
+|-----|--------|
+| `↑` / `↓` or `k` / `j` | Navigate the request or connection list |
+| `Enter` | Inspect the selected request or TCP connection |
+| `Esc` | Return to the list from the inspect view |
+| `Home` / `End` or `g` / `G` | Jump to top or bottom of the list |
+| `Ctrl+C` or `q` | Quit |
+
+**HTTP inspect view** shows request/response headers, body preview, status, timing, and remote address.
+
+**TCP inspect view** shows remote address, connection status, open/close times, duration, and data transfer (received, sent, total). For active connections, byte counters update in real time.
 
 ## Log Mode
 
@@ -258,4 +274,4 @@ gapo --tcp ssh 22          # tcp://tunnel.example.com:30000
 
 ---
 
-**Last Updated:** 2026-03-02 01:45:00 UTC
+**Last Updated:** 2026-03-03 12:00:00 UTC
