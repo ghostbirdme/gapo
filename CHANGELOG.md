@@ -1,3 +1,7 @@
+## v1.1.1 (2026-03-06)
+
+- **Fix:** `--rewrite` now works without needing `--host-header` — the Host header is automatically set to the rewrite hostname for local requests.
+
 ## v1.1.0 (2026-03-06)
 
 - **New:** `--rewrite` flag to tunnel apps like WordPress without changing their config — automatically rewrites URLs between your local hostname and the tunnel URL.

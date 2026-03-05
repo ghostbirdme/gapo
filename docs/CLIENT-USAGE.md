@@ -217,6 +217,7 @@ gapo --rewrite wpdev.local myapp 80
 ```
 
 This rewrites:
+- **Host header** — sends `Host: wpdev.local` to your local service so it serves the correct site
 - **Response body** — replaces `wpdev.local` with the tunnel URL (e.g., `myapp.tunnel.example.com`)
 - **Location headers** — fixes redirects so the browser stays on the tunnel URL
 - **Set-Cookie domains** — rewrites cookie domains so login sessions work
@@ -238,6 +239,8 @@ gapo --rewrite wpdev.local --local-https myapp 443
 ```bash
 gapo --rewrite wpdev.local --local-host 172.17.0.2 myapp 80
 ```
+
+> **Tip:** `--rewrite` automatically sets the Host header to the rewrite hostname, so you don't need `--host-header`. Use `--host-header` only if you need a different Host header than the rewrite hostname.
 
 > **Tip:** When `--rewrite` or `--host-header` is set, gapo tries to resolve the hostname to an IP address and uses it as `--local-host` automatically. You only need `--local-host` if the hostname doesn't resolve (e.g., Docker containers with custom IPs).
 
@@ -350,4 +353,4 @@ gapo --tcp ssh 22          # tcp://tunnel.example.com:30000
 
 ---
 
-**Last Updated:** 2026-03-06 18:00:00 UTC
+**Last Updated:** 2026-03-06 19:00:00 UTC
