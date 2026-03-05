@@ -1,3 +1,8 @@
+## v1.0.2 (2026-03-05)
+
+- **New:** Web-based request inspector — use `--inspect 4040` to open a browser dashboard at `http://127.0.0.1:4040` where you can view HTTP requests in real time with headers, body, and timing details.
+- **Enh:** TUI session panel now shows the inspect URL when `--inspect` is active.
+
 ## v1.0.1 (2026-03-03)
 
 - **New:** TCP connections in the TUI now support inspection — press Enter on any connection to see remote address, status, timing, and data transfer details.

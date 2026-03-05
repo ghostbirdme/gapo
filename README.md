@@ -7,6 +7,7 @@ Gapo exposes local services to the internet through secure tunnels. Share a webs
 - TCP tunnels for SSH, databases, and any TCP service
 - WebSocket support
 - Interactive TUI dashboard
+- Web-based request inspector (`--inspect`)
 - Automatic reconnection on network failure
 - Self-update built in
 - Single static binary, no dependencies
@@ -109,6 +110,18 @@ Others connect using the port Gapo assigns:
 ```bash
 mysql -h tunnel.example.com -P 30000 -u myuser -p
 ```
+
+---
+
+## Inspect requests in a browser
+
+Add `--inspect` to open a local web dashboard that shows all HTTP requests in real time:
+
+```bash
+gapo --inspect 4040 --http myapp 3000
+```
+
+Open `http://127.0.0.1:4040` in your browser. Click any request to see headers, body, and timing details.
 
 ---
 

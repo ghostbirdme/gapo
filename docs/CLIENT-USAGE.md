@@ -70,6 +70,7 @@ The name can be anything you choose (lowercase letters, numbers, hyphens). For H
 | `--tls` | | Encrypt tunnel connection (only when server uses `--tls`) | `false` |
 | `--insecure` | `-k` | Allow self-signed server certificates | `false` |
 | `--no-tui` | `-n` | Plain log output instead of TUI dashboard | `false` |
+| `--inspect` | `-i` | Start web inspector on this address (e.g. `4040`) | — |
 | `--update` | | Check for updates and self-update | — |
 | `--version` | `-v` | Show version and exit | — |
 | `--about` | | Show license and copyright info | — |
@@ -167,6 +168,36 @@ By default, gapo starts with an interactive dashboard showing:
 **HTTP inspect view** shows request/response headers, body preview, status, timing, and remote address.
 
 **TCP inspect view** shows remote address, connection status, open/close times, duration, and data transfer (received, sent, total). For active connections, byte counters update in real time.
+
+## Web Inspector
+
+Use `--inspect` (or `-i`) to start a local web-based request inspector. Open the URL in a browser to view HTTP requests in real time.
+
+```bash
+# Start with web inspector on port 4040
+gapo --inspect 4040 myapp 3000
+
+# You can also specify a full address
+gapo --inspect 127.0.0.1:4040 myapp 3000
+```
+
+Open `http://127.0.0.1:4040` in your browser to see:
+
+- **Request list** — live-updating table of all HTTP requests (method, path, status, timing)
+- **Request detail** — click any request to inspect headers, body, and metadata
+- **REST API** — access request data programmatically:
+  - `GET /api/requests` — list requests (supports `?limit=N&offset=N`)
+  - `GET /api/requests/{id}` — single request detail
+  - `GET /api/requests/stream` — SSE stream for live updates
+  - `GET /api/status` — tunnel status
+
+The inspector works with both TUI mode and log mode (`--no-tui`). When using TUI mode, the inspect URL is also shown in the session panel.
+
+You can set `GAPO_INSPECT` in `~/.gapo/config` to always start the inspector:
+
+```
+GAPO_INSPECT=4040
+```
 
 ## Log Mode
 
@@ -274,4 +305,4 @@ gapo --tcp ssh 22          # tcp://tunnel.example.com:30000
 
 ---
 
-**Last Updated:** 2026-03-03 12:00:00 UTC
+**Last Updated:** 2026-03-05 12:00:00 UTC

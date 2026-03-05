@@ -59,6 +59,7 @@ Any other value (or missing key) is treated as `false`.
 | `GAPO_TOKEN` | `--token` | Authentication token | — |
 | `GAPO_TLS` | `--tls` | Encrypt tunnel connection (only when server uses `--tls`) | `false` |
 | `GAPO_INSECURE` | `--insecure` | Allow self-signed certificates | `false` |
+| `GAPO_INSPECT` | `--inspect` | Start web inspector on this address (e.g. `4040`) | — |
 
 ### Minimal example
 
@@ -151,4 +152,4 @@ chmod 600 /etc/gapo/config
 
 ---
 
-**Last Updated:** 2026-03-02 01:45:00 UTC
+**Last Updated:** 2026-03-05 12:00:00 UTC
