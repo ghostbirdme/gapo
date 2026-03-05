@@ -71,6 +71,10 @@ The name can be anything you choose (lowercase letters, numbers, hyphens). For H
 | `--insecure` | `-k` | Allow self-signed server certificates | `false` |
 | `--no-tui` | `-n` | Plain log output instead of TUI dashboard | `false` |
 | `--inspect` | `-i` | Start web inspector on this address (e.g. `4040`) | — |
+| `--host-header` | | Override Host header sent to local service | — |
+| `--local-host` | | Local address to forward to (default `localhost`) | — |
+| `--local-https` | | Use HTTPS when forwarding to local service (auto-enabled on port 443) | `false` |
+| `--rewrite` | `-r` | Rewrite URLs between local hostname and tunnel URL (for WordPress, etc.) | — |
 | `--update` | | Check for updates and self-update | — |
 | `--version` | `-v` | Show version and exit | — |
 | `--about` | | Show license and copyright info | — |
@@ -93,6 +97,11 @@ EOF
 | `GAPO_TOKEN` | `--token` |
 | `GAPO_TLS` | `--tls` |
 | `GAPO_INSECURE` | `--insecure` |
+| `GAPO_HOST_HEADER` | `--host-header` |
+| `GAPO_LOCAL_HOST` | `--local-host` |
+| `GAPO_LOCAL_HTTPS` | `--local-https` |
+| `GAPO_REWRITE` | `--rewrite` |
+| `GAPO_INSPECT` | `--inspect` |
 
 CLI flags override config file values. With a config file, you only need:
 
@@ -114,7 +123,7 @@ gapo --http myapp 3000
 
 Your service is available at `https://myapp.tunnel.example.com` (or `http://` depending on server setup). WebSocket connections are supported automatically.
 
-> **Important:** The local port must be an **HTTP** port, not an HTTPS port. Gapo handles HTTPS on the public side and forwards plain HTTP to your local service. For example, if your service runs on port 80 (HTTP) and 443 (HTTPS), use port 80.
+> **Tip:** By default, gapo forwards plain HTTP to your local service. If your local service only runs on HTTPS (port 443), gapo detects this automatically and uses HTTPS. You can also use `--local-https` to enable this for other ports.
 
 **Multiple tunnels** — run each in a separate terminal:
 
@@ -198,6 +207,41 @@ You can set `GAPO_INSPECT` in `~/.gapo/config` to always start the inspector:
 ```
 GAPO_INSPECT=4040
 ```
+
+## URL Rewriting (WordPress, CMS)
+
+Use `--rewrite` to tunnel apps like WordPress that have a fixed local URL. Gapo rewrites URLs between your local hostname and the tunnel URL automatically — no need to change your app's config.
+
+```bash
+gapo --rewrite wpdev.local myapp 80
+```
+
+This rewrites:
+- **Response body** — replaces `wpdev.local` with the tunnel URL (e.g., `myapp.tunnel.example.com`)
+- **Location headers** — fixes redirects so the browser stays on the tunnel URL
+- **Set-Cookie domains** — rewrites cookie domains so login sessions work
+
+**WordPress example (HTTP):**
+
+```bash
+gapo --rewrite wpdev.local myapp 80
+```
+
+**WordPress example (HTTPS with custom host):**
+
+```bash
+gapo --rewrite wpdev.local --local-https myapp 443
+```
+
+**Docker container on a different IP:**
+
+```bash
+gapo --rewrite wpdev.local --local-host 172.17.0.2 myapp 80
+```
+
+> **Tip:** When `--rewrite` or `--host-header` is set, gapo tries to resolve the hostname to an IP address and uses it as `--local-host` automatically. You only need `--local-host` if the hostname doesn't resolve (e.g., Docker containers with custom IPs).
+
+> **Note:** `--rewrite` sets `Accept-Encoding: identity` on requests to your local service so it can rewrite response text. This means responses are not compressed between gapo and your local service (compression still works between the tunnel server and the browser).
 
 ## Log Mode
 
@@ -295,8 +339,9 @@ gapo --tcp ssh 22          # tcp://tunnel.example.com:30000
 - Make sure the server's domain matches the certificate
 
 **"Bad Request — You're speaking plain HTTP to an SSL-enabled server port"**
-- You are pointing the tunnel at an HTTPS port (e.g., 443). Use the HTTP port instead (e.g., 80 or 8080)
-- Gapo forwards plain HTTP to your local service. HTTPS is handled by the server on the public side
+- You are pointing the tunnel at an HTTPS port (e.g., 443) without `--local-https`
+- Either use your local service's HTTP port (e.g., 80 or 8080), or add `--local-https` to forward over HTTPS
+- When the local port is 443, gapo enables `--local-https` automatically
 
 **Tunnel connects but service is unreachable**
 - Verify your local service is running on the specified port
@@ -305,4 +350,4 @@ gapo --tcp ssh 22          # tcp://tunnel.example.com:30000
 
 ---
 
-**Last Updated:** 2026-03-05 12:00:00 UTC
+**Last Updated:** 2026-03-06 18:00:00 UTC

@@ -7,6 +7,7 @@ Gapo exposes local services to the internet through secure tunnels. Share a webs
 - TCP tunnels for SSH, databases, and any TCP service
 - WebSocket support
 - Interactive TUI dashboard
+- URL rewriting for WordPress and CMS apps (`--rewrite`)
 - Web-based request inspector (`--inspect`)
 - Automatic reconnection on network failure
 - Self-update built in
@@ -63,7 +64,7 @@ gapo --server tunnel.example.com:19443 --token your-secret-token --http myapp 30
 
 Your site is now live at `https://myapp.tunnel.example.com`.
 
-> **Note:** Use your local service's **HTTP** port (e.g., 80 or 3000), not HTTPS (443). Gapo handles HTTPS automatically on the public side.
+> **Note:** Use your local service's HTTP port (e.g., 80 or 3000). If your local service uses HTTPS (port 443), gapo detects this automatically. You can also use `--local-https` for other HTTPS ports.
 
 ---
 
@@ -122,6 +123,18 @@ gapo --inspect 4040 --http myapp 3000
 ```
 
 Open `http://127.0.0.1:4040` in your browser. Click any request to see headers, body, and timing details.
+
+---
+
+## Tunnel WordPress or other CMS
+
+Use `--rewrite` to tunnel apps that have a fixed local URL (like WordPress). Gapo rewrites URLs automatically — no need to change your app's config:
+
+```bash
+gapo --rewrite wpdev.local myapp 80
+```
+
+This rewrites URLs in responses, redirects, and cookies so everything works through the tunnel URL.
 
 ---
 

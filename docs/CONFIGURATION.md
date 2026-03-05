@@ -60,6 +60,10 @@ Any other value (or missing key) is treated as `false`.
 | `GAPO_TLS` | `--tls` | Encrypt tunnel connection (only when server uses `--tls`) | `false` |
 | `GAPO_INSECURE` | `--insecure` | Allow self-signed certificates | `false` |
 | `GAPO_INSPECT` | `--inspect` | Start web inspector on this address (e.g. `4040`) | — |
+| `GAPO_HOST_HEADER` | `--host-header` | Override Host header sent to local service | — |
+| `GAPO_LOCAL_HOST` | `--local-host` | Local address to forward to | `localhost` |
+| `GAPO_LOCAL_HTTPS` | `--local-https` | Use HTTPS when forwarding to local service | `false` |
+| `GAPO_REWRITE` | `--rewrite` | Rewrite URLs between local hostname and tunnel URL | — |
 
 ### Minimal example
 
@@ -152,4 +156,4 @@ chmod 600 /etc/gapo/config
 
 ---
 
-**Last Updated:** 2026-03-05 12:00:00 UTC
+**Last Updated:** 2026-03-06 18:00:00 UTC

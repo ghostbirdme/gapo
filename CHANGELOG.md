@@ -1,3 +1,12 @@
+## v1.1.0 (2026-03-06)
+
+- **New:** `--rewrite` flag to tunnel apps like WordPress without changing their config — automatically rewrites URLs between your local hostname and the tunnel URL.
+- **New:** `--host-header` flag to override the Host header sent to your local service.
+- **New:** `--local-host` flag to forward requests to a custom local address instead of localhost — useful for Docker containers or VMs. Auto-resolves from `--host-header` or `--rewrite` hostname.
+- **New:** `--local-https` flag to forward requests over HTTPS to your local service, with automatic support for self-signed certificates. Auto-enabled when local port is 443.
+- **Fix:** HTTP redirects from local services (e.g. login pages) now work correctly — the browser receives redirect responses directly instead of gapo following them internally.
+- **Dev:** Release workflow can now be triggered manually from the GitHub Actions page.
+
 ## v1.0.2 (2026-03-05)
 
 - **New:** Web-based request inspector — use `--inspect 4040` to open a browser dashboard at `http://127.0.0.1:4040` where you can view HTTP requests in real time with headers, body, and timing details.
